@@ -1,0 +1,21 @@
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+from sklearn.cluster import KMeans
+
+# Create sample data
+X, _ = make_blobs(n_samples=300, centers=4, cluster_std=0.6, random_state=0)
+
+# Compute inertia for different K
+inertia_values = []
+K_range = range(1, 11)
+for k in K_range:
+    kmeans = KMeans(n_clusters=k, random_state=0)
+    kmeans.fit(X)
+    inertia_values.append(kmeans.inertia_)
+print(inertia_values)
+# Plot
+plt.plot(K_range, inertia_values, 'bo-')
+plt.xlabel('Number of clusters K')
+plt.ylabel('Inertia / WCSS')
+plt.title('Elbow Method')
+plt.show()

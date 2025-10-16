@@ -1,0 +1,53 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Original data
+x = np.array([4, 8, 13, 7], dtype=float)
+y = np.array([11, 4, 5, 14], dtype=float)
+data = np.column_stack((x, y))
+
+# Step 1: compute the mean and mean-center the data
+mean_vec = data.mean(axis=0)
+centered = data - mean_vec
+
+# Step 2: compute covariance matrix (2x2)
+cov_matrix = np.cov(centered, rowvar=False)
+
+# Step 3: eigen decomposition of covariance matrix
+eig_vals, eig_vecs = np.linalg.eig(cov_matrix)
+
+# Step 4: sort eigenvectors by eigenvalues descending
+idx = np.argsort(eig_vals)[::-1]
+eig_vals_sorted = eig_vals[idx]
+eig_vecs_sorted = eig_vecs[:, idx]
+
+# Choose the first principal component (leading eigenvector)
+pc1 = eig_vecs_sorted[:, 0]
+
+# Step 5: project the centered data onto PC1 (1D coordinates)
+projected_1d = centered.dot(pc1)
+
+# Optional: reconstruct the 2D approximation from 1D (for visualization)
+reconstructed = np.outer(projected_1d, pc1) + mean_vec
+
+# Explained variance ratio for the first component
+explained_variance_ratio = eig_vals_sorted / eig_vals_sorted.sum()
+explained_variance_pc1 = explained_variance_ratio[0]
+
+# Prepare a DataFrame for inspection
+df = pd.DataFrame({
+    'x': x,
+    'y': y,
+    'x_centered': centered[:,0],
+    'y_centered': centered[:,1],
+    'projected_1d': projected_1d,
+    'reconstructed_x': reconstructed[:,0],
+    'reconstructed_y': reconstructed[:,1]
+})
+print("Mean vector:", mean_vec)
+print("Covariance matrix:\n", cov_matrix)
+print("Eigenvalues (sorted):", eig_vals_sorted)
+print("PC1 (unit vector):", pc1)
+print("Explained variance (PC1):", explained_variance_pc1)
+print("Projected 1D coordinates:", projected_1d)
