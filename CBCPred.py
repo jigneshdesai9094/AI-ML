@@ -10,6 +10,41 @@ from sklearn.metrics import accuracy_score
 # =========================
 df = pd.read_excel("./data/CBC-Dataset.xlsx", sheet_name="cbc-dataset")
 
+
+import pandas as pd
+
+# Sample data
+data = {'Color': ['Red', 'Blue', 'Green', 'Blue'],
+        'Size': ['Small', 'Large', 'Medium', 'Small']}
+df = pd.DataFrame(data)
+
+# One-Hot Encoding using pandas
+df_onehot = pd.get_dummies(df, columns=['Color', 'Size'])
+print(df_onehot)
+
+from sklearn.preprocessing import LabelEncoder
+
+data = {'color': ['Red', 'Blue', 'Green', 'Blue', 'Red']}
+df = pd.DataFrame(data)
+
+# Label Encoding
+le = LabelEncoder()
+df['color_encoded'] = le.fit_transform(df['color'])
+print(df)
+
+
+import pandas as pd
+
+# Sample data
+data = {'age': [10, 20, 30, 400, 50]}  # 400 is an outlier
+df = pd.DataFrame(data)
+print("Original Data:\n", df)
+
+# Clip values: limit age between 10 and 60
+df['age'] = df['age'].clip(lower=10, upper=60)
+print("\nAfter Clipping:\n", df)
+
+
 # =========================
 # 2. Drop duplicates
 # =========================
@@ -151,4 +186,5 @@ type_1_error=fp/(fp+tn)
 print("Type 1 error : ",type_1_error)
 
 type_2_error=fn/(fn+tp)
+
 print("Type 2 Error : ",type_2_error)
